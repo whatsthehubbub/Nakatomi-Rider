@@ -20,4 +20,6 @@ static function Berp(start : float, end : float, value : float) : float
 function Update () {
 	transform.position.x = Berp(transform.position.x, followTarget.position.x+xOffset, Time.deltaTime * followSpeed);
 	transform.position.y = Berp(transform.position.y, followTarget.position.y+yOffset, Time.deltaTime * followSpeed);
+
+	transform.RotateAround(followTarget.position, Vector3.back, followSpeed);
 }
