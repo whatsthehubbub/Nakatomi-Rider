@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{B083F7E7-D81A-D490-52A4-4959AC1CBE65}") = "nakatomi rider", "Assembly-CSharp-vs.csproj", "{DC56C5BE-1009-DBE3-F1F2-5275AB5BE148}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DC56C5BE-1009-DBE3-F1F2-5275AB5BE148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC56C5BE-1009-DBE3-F1F2-5275AB5BE148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC56C5BE-1009-DBE3-F1F2-5275AB5BE148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC56C5BE-1009-DBE3-F1F2-5275AB5BE148}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	
+EndGlobal
