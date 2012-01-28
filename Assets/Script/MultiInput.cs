@@ -8,44 +8,96 @@ public class MultiInput : MonoBehaviour
 	public string KillSwitch = "KillSwitch1";
 	public string Action = "Action1";
 	public float Speed = 5f;
-	
+	public float RotateSpeed = 90f;
+		
 	public Transform Explosion;
 		
 	private bool _startPressed = false;
-	// Use this for initialization
+	private bool _attackAllowed = false;
+	
+	// events
+	public delegate void DieEvent(Transform p_object);
+	public static event DieEvent OnDie;
+
 	void Start()
 	{
-		
+		Killer.OnKill += OnKill;
+	}
+	
+	void OnDestroy()
+	{
+		Killer.OnKill -= OnKill;
+	}
+	
+	void OnTouch(Collider other)
+	{
+		if (other.gameObject != gameObject)
+		{
+			_attackAllowed = true;
+		}
+	}
+	
+	void OnUnTouch(Collider other)
+	{
+		if (other.gameObject != gameObject)
+		{
+			_attackAllowed = false;
+		}
+	}
+	
+	void OnKill(Transform other)
+	{
+		if (other == transform )
+		{
+			Kill();
+		}
 	}
 	
 	// Update is called once per frame
-	void Update()
+	void FixedUpdate()
 	{
 		if (Input.GetButton(Action))
 		{
-			Kill();
+			if (_attackAllowed)
+			{
+				Debug.DrawLine(Vector3.zero, transform.position, Color.red);
+				Kill();
+			}
 		}
 		
 		if (Input.GetButton(KillSwitch))
 		{
 			float xinput = Input.GetAxisRaw(HorizontalAxis);
-			float yinput = Input.GetAxisRaw(VerticalAxis);
-		
-			transform.Translate(xinput * Time.deltaTime * Speed, yinput * Time.deltaTime * Speed, 0f);
+			float yinput = -Input.GetAxisRaw(VerticalAxis);
 			
+			/** /
+			transform.Rotate(0f, 0f, -xinput * Time.deltaTime * RotateSpeed);
+			transform.Translate(0f, -yinput * Time.deltaTime * Speed, 0f);
+			/**/
+			
+			//transform.Translate(xinput * Time.deltaTime * Speed, yinput * Time.deltaTime * Speed, 0f);
+			Debug.DrawLine(transform.position, transform.position + new Vector3(xinput, yinput, 0), Color.grey);
+			rigidbody.AddForce(xinput * Time.fixedDeltaTime * Speed, yinput * Time.fixedDeltaTime * Speed, 0f, ForceMode.VelocityChange);
 			_startPressed = true;
 		}
 		else if (_startPressed == true)
 		{
-			Kill();
+			//Kill();
 		}
 	}
 	
 	void Kill()
 	{
 		Instantiate(Explosion, transform.position, Quaternion.identity);
+		
+		if (OnDie != null)
+		{
+			OnDie(transform);
+		}
+		
 		Destroy(gameObject);
 	}
+	 
 	/*
 	void OnGUI()
 	{
