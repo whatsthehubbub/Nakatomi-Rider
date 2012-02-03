@@ -8,6 +8,7 @@ public class PlayerSpawner : MonoBehaviour
 	
 	public delegate void SpawnEvent(Transform p_object);
 	public static event SpawnEvent OnSpawn;
+	public AudioClip spawn;
 	
 	void Start()
 	{
@@ -35,6 +36,7 @@ public class PlayerSpawner : MonoBehaviour
 		yield return new WaitForSeconds(1.5f);
 		
 		_spawn = Instantiate(Player, transform.position, Quaternion.identity) as Transform;
+		AudioSource.PlayClipAtPoint(spawn, transform.position);
 		
 		if (OnSpawn != null)
 			OnSpawn(_spawn);

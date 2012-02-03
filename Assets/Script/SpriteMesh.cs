@@ -11,6 +11,7 @@ public class SpriteMesh : MonoBehaviour
 	// |  /|
 	// |/  |
 	// 1---2
+	public int Priority;
 	
 	void Start()
 	{
@@ -61,5 +62,12 @@ public class SpriteMesh : MonoBehaviour
 		mesh.normals = newNormals;
 		mesh.tangents = newTangents;
 		//mesh.Optimize(); // TODO check if this actually matters, it seems not to matter
+		
+		//MeshRenderer renderer = GetComponent<MeshRenderer>();
+		if (Application.isPlaying &&
+			renderer != null)
+		{
+			renderer.material.renderQueue = Priority;
+		}
 	}
 }

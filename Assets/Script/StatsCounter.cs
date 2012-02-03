@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(TextMesh))]
 public class StatsCounter : MonoBehaviour
 {
 	public string FilterTag;
-	public Color GUIColor = Color.red;
-	public Vector2 GUIPos = Vector2.zero;
+	public int Priority;
+	
+	public string TextString = "{0}";
+	private TextMesh _textMesh;
 	
 	private uint _kills;
 	private uint _score;
@@ -13,14 +16,15 @@ public class StatsCounter : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
+		_textMesh = GetComponent<TextMesh>();
+		_textMesh.renderer.material.renderQueue = Priority;
+		
 		Killer.OnKill         += KillCount;
-		Collectible.OnCollect += ScoreCount;;
 	}
 	
 	void OnDestroy()
 	{
 		Killer.OnKill         -= KillCount;
-		Collectible.OnCollect -= ScoreCount;;
 	}
 	
 	void KillCount(Transform other)
@@ -28,23 +32,7 @@ public class StatsCounter : MonoBehaviour
 		if (other.CompareTag(FilterTag))
 		{
 			_kills++;
+			_textMesh.text = string.Format(TextString, _kills);
 		}
-	}
-	
-	void ScoreCount(Transform other)
-	{
-		if (other.CompareTag(FilterTag))
-		{
-			_score++;
-		}
-	}
-
-	
-	void OnGUI()
-	{
-		Rect r = new Rect(GUIPos.x, GUIPos.y, 200f, 20f);
-		GUI.color = GUIColor;
-		GUI.Label(r, string.Format("Deaths: {0}", _kills)); r.y += r.height;
-		GUI.Label(r, string.Format("Score:  {0}", _score)); r.y += r.height;
 	}
 }

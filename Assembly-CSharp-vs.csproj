@@ -50,8 +50,13 @@
      <Compile Include="Assets\Script\Collectible.cs" />
      <Compile Include="Assets\Script\DynamicSpring.cs" />
      <Compile Include="Assets\Script\Killer.cs" />
+     <Compile Include="Assets\Script\LevelLoading\AnyButtonLevelLoad.cs" />
+     <Compile Include="Assets\Script\LevelLoading\DelayedLevelLoad.cs" />
+     <Compile Include="Assets\Script\LevelLoading\ShoulderButtonLevelLoad.cs" />
+     <Compile Include="Assets\Script\MagicBeam.cs" />
      <Compile Include="Assets\Script\MultiInput.cs" />
      <Compile Include="Assets\Script\PlayerSpawner.cs" />
+     <Compile Include="Assets\Script\ResultScore.cs" />
      <Compile Include="Assets\Script\SpriteMesh.cs" />
      <Compile Include="Assets\Script\StatsCounter.cs" />
      <Compile Include="Assets\Script\StripAnimationManager.cs" />

@@ -9,19 +9,35 @@ public class MultiInput : MonoBehaviour
 	public string Action = "Action1";
 	public float Speed = 5f;
 	public float RotateSpeed = 90f;
-		
 	public Transform Explosion;
-		
-	private bool _startPressed = false;
-	private bool _attackAllowed = false;
+	public AnimationCurve WingAnim;
+	private float _wingRestRotation;
+	public AnimationCurve Powerboost;
+	private float _powerboostTime;
+	//private bool _startPressed = false;
+	
+	
 	
 	// events
-	public delegate void DieEvent(Transform p_object);
+	public delegate void DieEvent (Transform p_object);
+
 	public static event DieEvent OnDie;
+	
+	public delegate void KillSwitchReleaseEvent ();
+
+	public static event KillSwitchReleaseEvent OnKillSwitchRelease;
+	
+	private Transform _wing;
 
 	void Start()
 	{
 		Killer.OnKill += OnKill;
+		Collectible.OnCollect += Collect;
+		
+		_wing = transform.Find("Parts/Wing");
+		_wingRestRotation = _wing.rotation.eulerAngles.z;
+		
+		_powerboostTime = -1;
 	}
 	
 	void OnDestroy()
@@ -29,25 +45,9 @@ public class MultiInput : MonoBehaviour
 		Killer.OnKill -= OnKill;
 	}
 	
-	void OnTouch(Collider other)
-	{
-		if (other.gameObject != gameObject)
-		{
-			_attackAllowed = true;
-		}
-	}
-	
-	void OnUnTouch(Collider other)
-	{
-		if (other.gameObject != gameObject)
-		{
-			_attackAllowed = false;
-		}
-	}
-	
 	void OnKill(Transform other)
 	{
-		if (other == transform )
+		if (other == transform)
 		{
 			Kill();
 		}
@@ -56,14 +56,30 @@ public class MultiInput : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate()
 	{
-		if (Input.GetButton(Action))
+		/*if (Input.GetButton(Action))
 		{
-			if (_attackAllowed)
-			{
-				Debug.DrawLine(Vector3.zero, transform.position, Color.red);
-				Kill();
-			}
+		}*/
+		/**/
+		Vector3 rot = _wing.rotation.eulerAngles;
+		rot.z = (Input.GetButton(KillSwitch)) ? WingAnim.Evaluate(Time.realtimeSinceStartup) : _wingRestRotation;
+		_wing.rotation = Quaternion.Euler(rot);
+		/**/
+		
+		/**/
+		float power;
+		if (_powerboostTime < 0f)
+		{
+			power = Speed;
 		}
+		else
+		{
+			_powerboostTime += Time.deltaTime; 
+			power = Speed * Powerboost.Evaluate(_powerboostTime);
+			
+			if (_powerboostTime > Powerboost.keys[Powerboost.length-1].time)
+				_powerboostTime = -1;
+		}
+		/**/
 		
 		if (Input.GetButton(KillSwitch))
 		{
@@ -74,15 +90,16 @@ public class MultiInput : MonoBehaviour
 			transform.Rotate(0f, 0f, -xinput * Time.deltaTime * RotateSpeed);
 			transform.Translate(0f, -yinput * Time.deltaTime * Speed, 0f);
 			/**/
+			Vector3 steer = Vector3.ClampMagnitude(new Vector3(xinput, yinput, 0), 1f);
 			
+			Debug.DrawLine(transform.position, transform.position + steer * power/5f, Color.grey);
+			rigidbody.AddForce(steer * Time.fixedDeltaTime * power, ForceMode.VelocityChange);
 			//transform.Translate(xinput * Time.deltaTime * Speed, yinput * Time.deltaTime * Speed, 0f);
-			Debug.DrawLine(transform.position, transform.position + new Vector3(xinput, yinput, 0), Color.grey);
-			rigidbody.AddForce(xinput * Time.fixedDeltaTime * Speed, yinput * Time.fixedDeltaTime * Speed, 0f, ForceMode.VelocityChange);
-			_startPressed = true;
 		}
-		else if (_startPressed == true)
+		else if (Input.GetButtonUp(KillSwitch))
 		{
-			//Kill();
+			if (OnKillSwitchRelease != null)
+				OnKillSwitchRelease();
 		}
 	}
 	
@@ -97,22 +114,9 @@ public class MultiInput : MonoBehaviour
 		
 		Destroy(gameObject);
 	}
-	 
-	/*
-	void OnGUI()
+	
+	void Collect(Transform other)
 	{
-		
-		float y = 20f;
-		float step = 25f;
-		GUI.Label(new Rect(0f, y, 300f, 20f), string.Format("KS1: {0}", Input.GetButton("KillSwitch1"))); 
-		y += step;
-		GUI.Label(new Rect(0f, y, 300f, 20f), string.Format("KS2: {0}", Input.GetButton("KillSwitch2"))); 
-		y += step;
-		GUI.Label(new Rect(0f, y, 300f, 20f), string.Format("A1: {0}", Input.GetButton("Action1"))); 
-		y += step;
-		GUI.Label(new Rect(0f, y, 300f, 20f), string.Format("A2: {0}", Input.GetButton("Action2"))); 
-		y += step;
-		
+		_powerboostTime = 0f;
 	}
-	*/
 }

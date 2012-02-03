@@ -4,10 +4,11 @@ using System.Collections;
 [RequireComponent(typeof(TouchCollector))]
 public class Collectible : MonoBehaviour
 {
-	public string FilterTag;
-	
+	public string IgnoreTag;
+	public float Boost = 10f;
 	public delegate void CollectEvent (Transform p_object);
 	public static event CollectEvent OnCollect;
+	public AudioClip moan;
 	
 	private TouchCollector _touch;
 	
@@ -24,10 +25,17 @@ public class Collectible : MonoBehaviour
 	
 	void Collect(Collider other)
 	{
-		if (other.gameObject.CompareTag(FilterTag))
+		if (other.gameObject.CompareTag(IgnoreTag) == false)
 		{
+			AudioSource.PlayClipAtPoint(moan, transform.position);
+
 			if (OnCollect != null)
 				OnCollect(other.transform);
+			
+			/*if (other.gameObject.rigidbody)
+			{
+				rigidbody.AddForce(transform.TransformDirection(transform.forward * Boost), ForceMode.Impulse);
+			}*/
 			
 			Destroy(gameObject);
 		}	

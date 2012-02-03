@@ -65,7 +65,8 @@ public class BezierMesh : MonoBehaviour
 		}
 		
 		int numtriangles = Steps * 2;
-		int[] triangles  = new int[numtriangles * 3];
+		
+		List<int> triangles  = new List<int>(new int[numtriangles * 3]);
 		
 		bool even = true;
 		
@@ -90,14 +91,11 @@ public class BezierMesh : MonoBehaviour
 			even = !even;
 		}
 		
-		mesh.vertices = verts.ToArray();
-		mesh.uv = uvs.ToArray();
-		//System.Array.Reverse(tris);
-		
-		//TODO: add UV coordinates
-		mesh.triangles = triangles;
+		mesh.vertices  = verts.ToArray();
+		mesh.uv        = uvs.ToArray();
+		mesh.triangles = triangles.ToArray();//System.Array.Reverse(tris);
 		mesh.RecalculateNormals();
-		
+
 		return mesh;
 	}
 	
@@ -114,11 +112,8 @@ public class BezierMesh : MonoBehaviour
 		Vector3 lastpoint = StartPoint;
 		foreach (Vector3 point in BezierPoints())
 		{
-			if (true || point != StartPoint)
-			{
-				yield return new Pair<Vector3>() { a = lastpoint, b = point };
-				lastpoint = point;
-			}
+			yield return new Pair<Vector3>() { a = lastpoint, b = point };
+			lastpoint = point;
 		}
 	}
 	
