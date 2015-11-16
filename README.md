@@ -9,3 +9,5 @@ http://archive.globalgamejam.org/2012/nakatomi-rider
 - Karel Millenaar - graphics & game design
 - Kars Alfrink - game design & programming
 - Niels 't Hooft - animation & special effects
+
+© 2012-2015 All Rights Reserved
